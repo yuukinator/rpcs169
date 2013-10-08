@@ -14,8 +14,8 @@
 %table#movies
   %thead
     %tr
-      %th {:class => "#{@category == "title" ? "hilite" : ""}"}
-	%a#title_header{:href => movies_path({"category" => "title", "sort" => "asc", "ratings" => @ratings})} Movie Title
+      %th{:class => "#{@category == "title" ? "hilite" : ""}"}
+        %a#title_header{:href => movies_path({"category" => "title", "sort" => "asc", "ratings" => @ratings})} Movie Title
       %th Rating
       %th {:class => "#{@category == "release_date" ? "hilite" : ""}"}
 	%a#release_date_header{:href => movies_path({"category" => "release_date", "sort" => "asc", "ratings" => @ratings})} Release Date

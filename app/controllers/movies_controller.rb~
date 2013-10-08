@@ -7,7 +7,7 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+   @all_ratings = Movie.ratings
 
 redirect = false
 
@@ -50,8 +50,6 @@ redirect = false
     end
 
   end
-
-
 
 
 
