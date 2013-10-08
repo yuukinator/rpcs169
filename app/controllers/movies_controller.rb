@@ -55,12 +55,12 @@ redirect = false
    
    if redirect
       flash.keep
-      redirect_to movies_path({:sort_order => session  [:sort_order], :ratings => session[:ratings]})
+      redirect_to(movies_path({:sort_order => s_order, :ratings => s_ratings}))
    end
 
    @checked_ratings = Hash.new(true)
    @all_ratings.each do |rating|
-	@checked_Ratings[rating] = session[:ratings].include?(rating)
+	@checked_Ratings[rating] = s_ratings.include?(rating)
    end
 
   end
