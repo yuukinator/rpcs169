@@ -35,7 +35,7 @@ redirect = false
    p_order = params[:sort_order]
     
 
-   if session[:sort_order] and (!params.has_key?(:ratings) or !	   params.has_key?(:sort_order))
+   if (session[:sort_order] and !params.has_key?(:sort_order)) or !params.has_key?(:ratings) 
 	redirect = true
    end
 
