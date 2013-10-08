@@ -39,6 +39,12 @@ redirect = false
 	redirect = true
    end
 
+  
+   if redirect
+      flash.keep
+      redirect_to(movies_path({:sort_order => s_order, :ratings => s_ratings}))
+   end
+
    if session[:sort_order] == 'release_date'
 	@movies = Movie.find(:all, :order => 'release_date ASC', :conditions => ["rating in (?)", s_ratings.keys])
 	@release_date_class = 'hilite'
@@ -52,15 +58,10 @@ redirect = false
 
    end
 
-   
-   if redirect
-      flash.keep
-      redirect_to(movies_path({:sort_order => s_order, :ratings => s_ratings}))
-   end
 
    @checked_ratings = Hash.new(true)
    @all_ratings.each do |rating|
-	@checked_Ratings[rating] = s_ratings.include?(rating)
+	@checked_ratings[rating] = s_ratings.include?(rating)
    end
 
   end
