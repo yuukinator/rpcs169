@@ -10,7 +10,7 @@ class MoviesController < ApplicationController
    @all_ratings = Movie.all_ratings
 	 #all_ratings now have access to G, PG, PG-13, etc.
 redirect = false
-   if session[:ratings] == nil
+   if !(session[:ratings])
 	session[:ratings] = Hash.new(true)
 	@all_ratings.each do |rating|
 		session[:ratings][rating] = '4'
@@ -39,6 +39,12 @@ redirect = false
 	redirect = true
    end
 
+  
+   if redirect
+      flash.keep
+      redirect_to(movies_path({:sort_order => s_order, :ratings => s_ratings}))
+   end
+
    if session[:sort_order] == 'release_date'
 	@movies = Movie.find(:all, :order => 'release_date ASC', :conditions => ["rating in (?)", s_ratings.keys])
 	@release_date_class = 'hilite'
@@ -52,11 +58,6 @@ redirect = false
 
    end
 
-   
-   if redirect
-      flash.keep
-      redirect_to(movies_path({:sort_order => s_order, :ratings => s_ratings}))
-   end
 
    @checked_ratings = Hash.new(true)
    @all_ratings.each do |rating|
