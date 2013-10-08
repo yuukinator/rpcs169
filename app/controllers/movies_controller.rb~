@@ -7,50 +7,58 @@ class MoviesController < ApplicationController
   end
 
   def index
-   @all_ratings = Movie.ratings
-
+   @all_ratings = Movie.all_ratings
+	 #all_ratings now have access to G, PG, PG-13, etc.
 redirect = false
+   if session[:ratings] == nil
+	session[:ratings] = Hash.new(true)
+	@all_ratings.each do |rating|
+		session[:ratings][rating] = '4'
+	end
+   end
 
-    @category = nil
-    if params.has_key?(:category)
-      @category = params[:category]
-    elsif session.has_key?(:category)
-      @category = session[:category]
-      redirect = true
-    end
+   #checking if params has a key :ratings
+   if params.has_key?(:ratings)
+	session[:ratings] = params[:ratings]
+   end
 
-    @sort = nil
-    if params.has_key?(:sort)
-      @sort = params[:sort]
-    elsif session.has_key?(:sort)
-      @sort = session[:sort]
-      redirect = true
-    end
+   #checking if params has a key :sort_order
+   if params.has_key?(:sort_order)
+	session[:sort_order] = params[:sort_order]
+   end
 
-    @ratings =  {"G" => "1", "PG" => "1", "PG-13" => "1", "R" => "1"}
-    if params.has_key?(:ratings)
-      @ratings = params[:ratings]
-    elsif session.has_key?(:ratings)
-      @ratings = session[:ratings]
-      redirect = true
-    end
 
-    @movies = Movie.where("rating in (?)", @ratings.keys)
-    session[:ratings] = @ratings
+   if session[:sort_order] and (!params.has_key?(:ratings) or !	   params.has_key?(:sort_order))
+	redirect = true
+   end
 
-    if @category and @sort
-      @movies = @movies.find(:all, :order => "#{@category} #{@sort}")
-      session[:category] = @category
-      session[:sort] = @sort
-    end
 
-    if redirect
+
+   if session[:sort_order] == 'release_date'
+	@movies = Movie.find(:all, :order => 'release_date ASC', :conditions => ["rating in (?)", session[:ratings].keys])
+	@release_date_class = 'hilite'
+
+   elsif session[:sort_order] == 'title'
+	@movies = Movie.find(:all, :order => 'title ASC', :conditions => ["rating in (?)", session[:ratings].keys])
+	@title_class = 'hilite'
+
+   else
+	@movies = Movie.find(:all, :conditions => ["rating in (?)", session[:ratings].keys])
+
+   end
+
+   
+   if redirect
       flash.keep
-      redirect_to movies_path({:category => @category, :sort => @sort, :ratings => @ratings})
-    end
+      redirect_to movies_path({:sort_order => session  [:sort_order], :ratings => session[:ratings]})
+   end
+
+   @checked_ratings = Hash.new(true)
+   @all_ratings.each do |rating|
+	@checked_Ratings[rating] = session[:ratings].include?(rating)
+   end
 
   end
-
 
 
 

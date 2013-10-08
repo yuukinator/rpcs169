@@ -28,22 +28,27 @@ redirect = false
    end
 
 
+
+   s_ratings = session[:ratings]
+   s_order = session[:sort_order]
+   p_ratings = params[:ratings]
+   p_order = params[:sort_order]
+    
+
    if session[:sort_order] and (!params.has_key?(:ratings) or !	   params.has_key?(:sort_order))
 	redirect = true
    end
 
-
-
    if session[:sort_order] == 'release_date'
-	@movies = Movie.find(:all, :order => 'release_date ASC', :conditions => ["rating in (?)", session[:ratings].keys])
+	@movies = Movie.find(:all, :order => 'release_date ASC', :conditions => ["rating in (?)", s_ratings.keys])
 	@release_date_class = 'hilite'
 
    elsif session[:sort_order] == 'title'
-	@movies = Movie.find(:all, :order => 'title ASC', :conditions => ["rating in (?)", session[:ratings].keys])
+	@movies = Movie.find(:all, :order => 'title ASC', :conditions => ["rating in (?)", s_ratings.keys])
 	@title_class = 'hilite'
 
    else
-	@movies = Movie.find(:all, :conditions => ["rating in (?)", session[:ratings].keys])
+	@movies = Movie.find(:all, :conditions => ["rating in (?)", s_ratings.keys])
 
    end
 
