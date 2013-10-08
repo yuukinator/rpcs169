@@ -9,38 +9,46 @@ class MoviesController < ApplicationController
   def index
     @movies = Movie.all
 
+redirect = false
 
-if params[:sort].nil? && params[:ratings].nil? &&
-        (!session[:sort].nil? || !session[:ratings].nil?)
-      redirect_to movies_path(:sort => session[:sort], :ratings => session[:ratings])
+    @category = nil
+    if params.has_key?(:category)
+      @category = params[:category]
+    elsif session.has_key?(:category)
+      @category = session[:category]
+      redirect = true
     end
 
-    @sort = params[:sort]
-    @ratings = params[:ratings] 
-    if @ratings.nil?
-      ratings = Movie.ratings 
-    else
-      ratings = @ratings.keys
+    @sort = nil
+    if params.has_key?(:sort)
+      @sort = params[:sort]
+    elsif session.has_key?(:sort)
+      @sort = session[:sort]
+      redirect = true
     end
 
-    @all_ratings = Movie.ratings.inject(Hash.new) do |all_ratings, rating|
-          all_ratings[rating] = @ratings.nil? ? false : @ratings.has_key?(rating) 
-          all_ratings
-      end
-      
-    if !@sort.nil?
-      begin
-        @movies = Movie.order("#{@sort} ASC").find_all_by_rating(ratings)
-      rescue ActiveRecord::StatementInvalid
-        flash[:warning] = "Movies cannot be sorted by #{@sort}."
-        @movies = Movie.find_all_by_rating(ratings)
-      end
-    else
-      @movies = Movie.find_all_by_rating(ratings)
+    @ratings =  {"G" => "1", "PG" => "1", "PG-13" => "1", "R" => "1"}
+    if params.has_key?(:ratings)
+      @ratings = params[:ratings]
+    elsif session.has_key?(:ratings)
+      @ratings = session[:ratings]
+      redirect = true
     end
 
-    session[:sort] = @sort
+    @movies = Movie.where("rating in (?)", @ratings.keys)
     session[:ratings] = @ratings
+
+    if @category and @sort
+      @movies = @movies.find(:all, :order => "#{@category} #{@sort}")
+      session[:category] = @category
+      session[:sort] = @sort
+    end
+
+    if redirect
+      flash.keep
+      redirect_to movies_path({:category => @category, :sort => @sort, :ratings => @ratings})
+    end
+
   end
 
 
