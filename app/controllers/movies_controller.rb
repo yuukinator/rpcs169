@@ -59,9 +59,9 @@ redirect = false
    end
 
 
-   @checked_ratings = Hash.new(true)
+   @checks = Hash.new(true)
    @all_ratings.each do |rating|
-	@checked_ratings[rating] = s_ratings.include?(rating)
+	@checks[rating] = s_ratings.include?(rating)
    end
 
   end
