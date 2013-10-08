@@ -1,7 +1,7 @@
 class Movie < ActiveRecord::Base
-	@@ratings = ["PG", "G", "PG-13", "R"]
+	@@ratings = ["PG", "G", "PG-13", "R", "NC-17"]
 
-	def self.ratings
+	def self.all_ratings
 		@@ratings
 	end
 end
