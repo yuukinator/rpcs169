@@ -6,7 +6,7 @@
   Include:
   - @all_ratings.each do |rating|
     = rating
-    = check_box_tag "ratings[#{rating}]", rating, @ratings[rating] ? true : false
+    = check_box_tag "ratings[#{rating}]", '4', @checked_ratings[rating]
   = submit_tag 'Refresh', "id" => "ratings_submit"
 
 
